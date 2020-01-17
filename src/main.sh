@@ -37,6 +37,11 @@ function parseInputs {
     tfWorkingDir=${INPUT_TF_ACTIONS_WORKING_DIR}
   fi
 
+  tfWorkingDirLoop=""
+  if [ "${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}" != "" ] || [ "${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}" != "." ]; then
+    tfWorkingDir=${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}
+  fi
+
   tfComment=0
   if [ "${INPUT_TF_ACTIONS_COMMENT}" == "1" ] || [ "${INPUT_TF_ACTIONS_COMMENT}" == "true" ]; then
     tfComment=1
@@ -51,6 +56,8 @@ function parseInputs {
   if [ "${INPUT_TF_ACTIONS_CLI_CREDENTIALS_TOKEN}" != "" ]; then
     tfCLICredentialsToken=${INPUT_TF_ACTIONS_CLI_CREDENTIALS_TOKEN}
   fi
+
+
 }
 
 function configureCLICredentials {
@@ -92,6 +99,7 @@ function installTerraform {
   fi
   echo "Successfully unzipped Terraform v${tfVersion}"
 }
+
 
 function main {
   # Source the other files to gain access to their functions

@@ -3,8 +3,14 @@
 function terraformInit {
   # Gather the output of `terraform init`.
   echo "init: info: initializing Terraform configuration in ${tfWorkingDir}"
-  initOutput=$(terraform init -input=false ${*} 2>&1)
-  initExitCode=${?}
+  if [["${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}" != ""]]; then
+    EXITCODE=0
+    initOutput="$( for dir in  ${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}/*/; do echo $dir; terraform init -input=false ${*} $dir 2>&1||EXITCODE=1;done )"
+    initExitCode=${EXITCODE}
+  else
+    initOutput=$(terraform init -input=false ${*} 2>&1)
+    initExitCode=${?}
+  fi
 
   # Exit code of 0 indicates success. Print the output and exit.
   if [ ${initExitCode} -eq 0 ]; then
