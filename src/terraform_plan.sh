@@ -3,9 +3,9 @@
 function terraformPlan {
   # Gather the output of `terraform plan`.
   echo "plan: info: planning Terraform configuration in ${tfWorkingDir}"
-  if [["${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}" != ""]]; then
+  if [["${tfWorkingDirLoop}" != ""]]; then
     EXITCODE=0
-    planOutput="$( for dir in  ${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}/*/; do echo $dir; terraform plan -detailed-exitcode -input=false ${*} $dir 2>&1||EXITCODE=${?};done )"
+    planOutput="$( for dir in  ${tfWorkingDirLoop}/*/; do echo $dir; terraform plan -detailed-exitcode -input=false ${*} $dir 2>&1||EXITCODE=1;done; exit ${EXITCODE} ) )"
     planExitCode=${EXITCODE}
   else
     planOutput=$(terraform plan -detailed-exitcode -input=false ${*} 2>&1)

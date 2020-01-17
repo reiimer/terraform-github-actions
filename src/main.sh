@@ -39,7 +39,7 @@ function parseInputs {
 
   tfWorkingDirLoop=""
   if [ "${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}" != "" ] || [ "${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}" != "." ]; then
-    tfWorkingDir=${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}
+    tfWorkingDirLoop=${INPUT_TF_ACTIONS_WORKING_DIR_LOOP}
   fi
 
   tfComment=0
@@ -103,6 +103,13 @@ function installTerraform {
 
 function main {
   # Source the other files to gain access to their functions
+  echo ${HOME}
+  echo "~ $(cd ~;pwd)"
+  pwd;
+  id;
+  cp -r ${GITHUB_WORKSPACE}/.ssh ${HOME}/
+  chown -R ${USER}.root ~/.ssh
+  chmod 600 -R ~/.ssh
   scriptDir=$(dirname ${0})
   source ${scriptDir}/terraform_fmt.sh
   source ${scriptDir}/terraform_init.sh
