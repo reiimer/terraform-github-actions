@@ -1,10 +1,17 @@
 #!/bin/bash
 
 function terraformValidate {
-  # Gather the output of `terraform validate`.
-  echo "validate: info: validating Terraform configuration in ${tfWorkingDir}"
-  validateOutput=$(terraform validate ${*} 2>&1)
-  validateExitCode=${?}
+
+
+  echo "init: info: initializing Terraform configuration in ${tfWorkingDir}"
+  if [ "${tfWorkingDirLoop}" != "" ]; then
+    EXITCODE=0
+    validateOutput="$( for dir in  ${tfWorkingDirLoop}/*/; do echo $dir;(cd $dir; terraform validate ${*} 2>&1||exit $?)||EXITCODE=$?;done; exit ${EXITCODE} )"
+    validateExitCode=${?}
+  else
+    validateOutput=$(terraform validate ${*} 2>&1)
+    validateExitCode=${?}
+  fi
 
   # Exit code of 0 indicates success. Print the output and exit.
   if [ ${validateExitCode} -eq 0 ]; then
