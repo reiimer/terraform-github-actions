@@ -107,9 +107,10 @@ function main {
   echo "~ $(cd ~;pwd)"
   pwd;
   id;
-  cp -r ${GITHUB_WORKSPACE}/.ssh ${HOME}/
-  chown -R ${USER}.root ~/.ssh
-  chmod 600 -R ~/.ssh
+  cp -r ${GITHUB_WORKSPACE}/.ssh /root/
+  chown -R ${USER}.root /root/.ssh
+  chmod 700 /root/.ssh
+  chmod 600 /root/.ssh/*
   scriptDir=$(dirname ${0})
   source ${scriptDir}/terraform_fmt.sh
   source ${scriptDir}/terraform_init.sh
