@@ -6,7 +6,7 @@ function terraformApply {
     if [ "${tfWorkingDirLoop}" != "" ]; then
       EXITCODE=0
        echo "Printing params: ${TF_CLI_ARGS}"
-      applyOutput="$( for dir in  ${tfWorkingDirLoop}/*/; do echo $dir; (set -x; cd $dir; terraform apply -input=false ${*} 2>&1|| exit $?)||EXITCODE=$?;done; exit ${EXITCODE} )"
+      applyOutput="$( for dir in  ${tfWorkingDirLoop}/*/; do echo $dir; (set -x; cd $dir; terraform apply -auto-approve -input=false ${*} 2>&1|| exit $?)||EXITCODE=$?;done; exit ${EXITCODE} )"
       applyExitCode=${?}
     else
       applyOutput=$(terraform apply -input=false ${*} 2>&1)
