@@ -8,7 +8,6 @@ function terraformApply {
        echo "Printing params: ${TF_CLI_ARGS}"
       applyOutput="$( for dir in  ${tfWorkingDirLoop}/*/; do echo $dir; (set -x; cd $dir; terraform apply -detailed-exitcode -input=false ${*} 2>&1|| exit $?)||EXITCODE=$?;done; exit ${EXITCODE} )"
       applyExitCode=${?}
-      mv
     else
       applyOutput=$(terraform apply -detailed-exitcode -input=false ${*} 2>&1)
       applyExitCode=${?}
@@ -50,7 +49,5 @@ ${applyOutput}
     echo "apply: info: commenting on the pull request"
     echo "${applyPayload}" | curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data @- "${applyCommentsURL}" > /dev/null
   fi
-  if [ "$tfIgnoreErrors" -eq 0 ]; then
-    exit ${applyExitCode}
-  else
+  exit ${applyExitCode}
 }
