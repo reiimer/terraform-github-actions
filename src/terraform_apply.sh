@@ -3,8 +3,16 @@
 function terraformApply {
   # Gather the output of `terraform apply`.
   echo "apply: info: applying Terraform configuration in ${tfWorkingDir}"
-  applyOutput=$(terraform apply -auto-approve -input=false ${*} 2>&1)
-  applyExitCode=${?}
+    if [ "${tfWorkingDirLoop}" != "" ]; then
+      EXITCODE=0
+       echo "Printing params: ${TF_CLI_ARGS}"
+      applyOutput="$( for dir in  ${tfWorkingDirLoop}/*/; do echo $dir; (set -x; cd $dir; terraform apply -detailed-exitcode -input=false ${*} 2>&1|| exit $?)||EXITCODE=$?;done; exit ${EXITCODE} )"
+      applyExitCode=${?}
+      mv
+    else
+      applyOutput=$(terraform apply -detailed-exitcode -input=false ${*} 2>&1)
+      applyExitCode=${?}
+    fi
   applyCommentStatus="Failed"
 
   # Exit code of 0 indicates success. Print the output and exit.
@@ -42,6 +50,7 @@ ${applyOutput}
     echo "apply: info: commenting on the pull request"
     echo "${applyPayload}" | curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data @- "${applyCommentsURL}" > /dev/null
   fi
-
-  exit ${applyExitCode}
+  if [ "$tfIgnoreErrors" -eq 0 ]; then
+    exit ${applyExitCode}
+  else
 }
