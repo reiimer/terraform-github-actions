@@ -40,7 +40,7 @@ function terraformPlan {
     echo "${planOutput}"
     echo
     if echo "${planOutput}" | egrep '^-{72}$' &> /dev/null; then
-        planOutput=$(echo "${planOutput}" | sed -n -r '/-{72}/,/-{72}/{ /-{72}/d; p }')
+        planOutput=$(echo "${planOutput}" | sed -n -r '/-{72}/d; p')
     fi
     planOutput=$(echo "${planOutput}" | sed -r -e 's/^  \+/\+/g' | sed -r -e 's/^  ~/~/g' | sed -r -e 's/^  -/-/g')
 
