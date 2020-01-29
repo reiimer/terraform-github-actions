@@ -8,7 +8,7 @@ function terraformPlan {
      echo "Printing params: ${TF_CLI_ARGS}"
      for dir in  ${tfWorkingDirLoop}/*/; do
       echo $dir;
-      planOutput+="$(cd $dir; terraform plan -out ./$(basename $dir | grep -Eo '([A-Za-z\_0-9\-]*)$').plan -detailed-exitcode -input=false "${*}" 2>&1)" ||EXITCODE=$?;
+      planOutput+="$(cd $dir; terraform plan -out ./$(basename $dir | grep -Eo '([A-Za-z\_0-9\-]*)$').plan -detailed-exitcode -input=false ${*} 2>&1)" ||EXITCODE=$?;
      done
      planExitCode=${EXITCODE}
   else
